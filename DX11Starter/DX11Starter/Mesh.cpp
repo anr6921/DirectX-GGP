@@ -4,45 +4,47 @@
 // For the DirectX Math library
 using namespace DirectX;
 
-Mesh::Mesh()
+Mesh::Mesh(Vertex* vertices, UINT numVertices, UINT* indices, UINT numIndices, ID3D11Device* device)
 {
-	bufferIndices = 0; // how many indices are in the mash's index buffer
-
-	// Create some temporary variables to represent colors
-	XMFLOAT4 red = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	XMFLOAT4 green = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-	XMFLOAT4 blue = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
-
-	// array of Vertex objects
-	Vertex vertices[] =
-	{
-		{ XMFLOAT3(+0.0f, +1.0f, +0.0f), red },
-		{ XMFLOAT3(+1.5f, -1.0f, +0.0f), blue },
-		{ XMFLOAT3(-1.5f, -1.0f, +0.0f), green },
-	};
-
-	// int specifying number of indices in the index array
-	int numVertices;
-
-	// array of unsigned integers for indices
-	UINT indices[] = { 0, 1, 2 };
-
-	// num of indices in index array
-	int numIndices;
-
-	// point to device object used to create buffers
-	ID3D11Device* createBuffer;
-
 	vertexBuffer;
 	indexBuffer;
+	bufferIndices = numIndices;
 
-	// Actually create the buffer with the initial data
-	// - Once we do this, we'll NEVER CHANGE THE BUFFER AGAIN
-	//device->CreateBuffer(&vbd, &initialVertexData, &vertexBuffer);
+	//Vertex Buffer
+	// Create the VERTEX BUFFER description -----------------------------------
+	D3D11_BUFFER_DESC vbd;
+	vbd.Usage = D3D11_USAGE_IMMUTABLE;
+	vbd.ByteWidth = sizeof(Vertex) * numVertices;    
+	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER; // Tells DirectX this is a vertex buffer
+	vbd.CPUAccessFlags = 0;
+	vbd.MiscFlags = 0;
+	vbd.StructureByteStride = 0;
 
-	// Actually create the buffer with the initial data
-	// - Once we do this, we'll NEVER CHANGE THE BUFFER AGAIN
-	//device->CreateBuffer(&ibd, &initialIndexData, &indexBuffer);
+	// Create the proper struct to hold the initial vertex data
+	// - This is how we put the initial data into the buffer
+	D3D11_SUBRESOURCE_DATA initialVertexData;
+	initialVertexData.pSysMem = vertices;
+
+	device->CreateBuffer(&vbd, &initialVertexData, &vertexBuffer);
+
+
+	//Index Buffer
+
+	// Create the INDEX BUFFER description ------------------------------------
+	D3D11_BUFFER_DESC ibd;
+	ibd.Usage = D3D11_USAGE_IMMUTABLE;
+	ibd.ByteWidth = sizeof(int) * numIndices;         // 3 = number of indices in the buffer
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER; // Tells DirectX this is an index buffer
+	ibd.CPUAccessFlags = 0;
+	ibd.MiscFlags = 0;
+	ibd.StructureByteStride = 0;
+
+	// Create the proper struct to hold the initial index data
+	// - This is how we put the initial data into the buffer
+	D3D11_SUBRESOURCE_DATA initialIndexData;
+	initialIndexData.pSysMem = indices;
+
+	device->CreateBuffer(&ibd, &initialIndexData, &indexBuffer);
 	
 }
 
@@ -54,16 +56,16 @@ Mesh::~Mesh()
 
 ID3D11Buffer* Mesh::GetVertexBuffer()
 {
-
+	return vertexBuffer;
 }
 
 ID3D11Buffer* Mesh::GetIndexBuffer()
 {
-
+	return indexBuffer;
 }
 
 int Mesh::GetIndexCount()
 {
-
+	return bufferIndices;
 }
 

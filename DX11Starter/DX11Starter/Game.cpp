@@ -50,6 +50,11 @@ Game::~Game()
 	// will clean up their own internal DirectX stuff
 	delete vertexShader;
 	delete pixelShader;
+	
+	// delete meshy boys
+	delete mesh1;
+	delete mesh2;
+	delete mesh3;
 }
 
 // --------------------------------------------------------
@@ -157,9 +162,14 @@ void Game::CreateBasicGeometry()
 	// - Indices are technically not required if the vertices are in the buffer 
 	//    in the correct order and each one will be used exactly once
 	// - But just to see how it's done...
-	int indices[] = { 0, 1, 2 };
+	UINT indices[] = { 0, 1, 2 };
+
+	mesh1 = new Mesh(vertices, 3, indices, 3, device);
+	mesh2 = new Mesh(vertices, 3, indices, 3, device);
+	mesh3 = new Mesh(vertices, 3, indices, 3, device);
 
 
+	/*
 	// Create the VERTEX BUFFER description -----------------------------------
 	// - The description is created on the stack because we only need
 	//    it to create the buffer.  The description is then useless.
@@ -200,7 +210,7 @@ void Game::CreateBasicGeometry()
 
 	// Actually create the buffer with the initial data
 	// - Once we do this, we'll NEVER CHANGE THE BUFFER AGAIN
-	device->CreateBuffer(&ibd, &initialIndexData, &indexBuffer);
+	device->CreateBuffer(&ibd, &initialIndexData, &indexBuffer);*/
 }
 
 
@@ -271,23 +281,33 @@ void Game::Draw(float deltaTime, float totalTime)
 	vertexShader->SetShader();
 	pixelShader->SetShader();
 
+	/*
 	// Set buffers in the input assembler
 	//  - Do this ONCE PER OBJECT you're drawing, since each object might
 	//    have different geometry.
-	UINT stride = sizeof(Vertex);
-	UINT offset = 0;
+	
 	context->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
 	context->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	*/
+
+	UINT stride = sizeof(Vertex);
+	UINT offset = 0;
+	// IA
+	ID3D11Buffer* vBuffer = mesh1->GetVertexBuffer();
+	context->IAGetVertexBuffers(0, 1, &vBuffer, &stride, &offset);
+	context->IASetIndexBuffer(mesh1->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+	context->DrawIndexed(mesh1->GetIndexCount(), 0, 0);
 
 	// Finally do the actual drawing
 	//  - Do this ONCE PER OBJECT you intend to draw
 	//  - This will use all of the currently set DirectX "stuff" (shaders, buffers, etc)
 	//  - DrawIndexed() uses the currently set INDEX BUFFER to look up corresponding
 	//     vertices in the currently set VERTEX BUFFER
+	/*
 	context->DrawIndexed(
 		3,     // The number of indices to use (we could draw a subset if we wanted)
 		0,     // Offset to the first index we want to use
-		0);    // Offset to add to each index when looking up vertices
+		0);    // Offset to add to each index when looking up vertices*/
 
 
 

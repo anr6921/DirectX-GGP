@@ -3,6 +3,7 @@
 #include "DXCore.h"
 #include "SimpleShader.h"
 #include <DirectXMath.h>
+#include "Mesh.h"
 
 class Game 
 	: public DXCore
@@ -25,6 +26,10 @@ public:
 	void OnMouseMove (WPARAM buttonState, int x, int y);
 	void OnMouseWheel(float wheelDelta,   int x, int y);
 private:
+	// Create private mesh 
+	Mesh* mesh1;
+	Mesh* mesh2;
+	Mesh* mesh3;
 
 	// Initialization helper methods - feel free to customize, combine, etc.
 	void LoadShaders(); 
