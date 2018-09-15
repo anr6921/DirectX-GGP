@@ -56,6 +56,11 @@ Game::~Game()
 	delete mesh1;
 	delete mesh2;
 	delete mesh3;
+
+	// delete game entities
+	delete entity1;
+	delete entity2;
+	delete entity3;
 }
 
 // --------------------------------------------------------
@@ -183,6 +188,9 @@ void Game::CreateBasicGeometry()
 	mesh2 = new Mesh(vertices2, 3, indices, 3, device);
 	mesh3 = new Mesh(vertices3, 3, indices, 3, device);
 
+	entity1 = new GameEntity(mesh1);
+	entity2 = new GameEntity(mesh1);
+	entity3 = new GameEntity(mesh2);
 }
 
 
@@ -212,6 +220,20 @@ void Game::Update(float deltaTime, float totalTime)
 	// Quit if the escape key is pressed
 	if (GetAsyncKeyState(VK_ESCAPE))
 		Quit();
+
+	// Update position
+	float sinTime = (sin(totalTime));
+	XMMATRIX scale = XMMatrixScaling(sinTime, sinTime, sinTime);
+	XMMATRIX rotation = XMMatrixRotationX(totalTime);
+	XMMATRIX translate = XMMatrixTranslation(1, 0, 0);
+	
+	XMMATRIX world = scale * rotation * translate;
+	entity1->Transform(world);
+
+	//XMFLOAT4X4& entity1Matrix = entity1->GetWorldMatrix;
+	//XMStoreFloat4x4(&entity1Matrix, XMMatrixTranspose(scale*rotation*translate));
+
+	
 }
 
 // --------------------------------------------------------
@@ -237,21 +259,21 @@ void Game::Draw(float deltaTime, float totalTime)
 	//  - This is actually a complex process of copying data to a local buffer
 	//    and then copying that entire buffer to the GPU.  
 	//  - The "SimpleShader" class handles all of that for you.
-	vertexShader->SetMatrix4x4("world", worldMatrix);
-	vertexShader->SetMatrix4x4("view", viewMatrix);
-	vertexShader->SetMatrix4x4("projection", projectionMatrix);
+	//vertexShader->SetMatrix4x4("world", worldMatrix);
+	//vertexShader->SetMatrix4x4("view", viewMatrix);
+	//vertexShader->SetMatrix4x4("projection", projectionMatrix);
 
 	// Once you've set all of the data you care to change for
 	// the next draw call, you need to actually send it to the GPU
 	//  - If you skip this, the "SetMatrix" calls above won't make it to the GPU!
-	vertexShader->CopyAllBufferData();
+	//vertexShader->CopyAllBufferData();
 
 	// Set the vertex and pixel shaders to use for the next Draw() command
 	//  - These don't technically need to be set every frame...YET
 	//  - Once you start applying different shaders to different objects,
 	//    you'll need to swap the current shaders before each draw
-	vertexShader->SetShader();
-	pixelShader->SetShader();
+	//vertexShader->SetShader();
+	//pixelShader->SetShader();
 
 	/*
 	// Set buffers in the input assembler
@@ -264,7 +286,48 @@ void Game::Draw(float deltaTime, float totalTime)
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 
+	// Pass world matrix into shader
+	vertexShader->SetMatrix4x4("world", entity1->GetWorldMatrix());
+	vertexShader->SetMatrix4x4("view", viewMatrix);
+	vertexShader->SetMatrix4x4("projection", projectionMatrix);
+	vertexShader->CopyAllBufferData();
+
+	vertexShader->SetShader();
+	pixelShader->SetShader();
+
+	// Draw game entities
+	// Entity 1
+	Mesh* meshEntity1 = entity1->GetMesh();
+	ID3D11Buffer* vBuffer1 = meshEntity1->GetVertexBuffer();
+	context->IASetVertexBuffers(0, 1, &vBuffer1, &stride, &offset);
+	context->IASetIndexBuffer(meshEntity1->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+	context->DrawIndexed(
+		meshEntity1->GetIndexCount(),
+		0,
+		0);
+
+	// Entity 2
+	Mesh* meshEntity2 = entity2->GetMesh();
+	ID3D11Buffer* vBuffer2 = meshEntity2->GetVertexBuffer();
+	context->IASetVertexBuffers(0, 1, &vBuffer2, &stride, &offset);
+	context->IASetIndexBuffer(meshEntity2->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+	context->DrawIndexed(
+		meshEntity2->GetIndexCount(),
+		0,
+		0);
+
+	// Entity 3
+	Mesh* meshEntity3 = entity3->GetMesh();
+	ID3D11Buffer* vBuffer3 = meshEntity3->GetVertexBuffer();
+	context->IASetVertexBuffers(0, 1, &vBuffer3, &stride, &offset);
+	context->IASetIndexBuffer(meshEntity3->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+	context->DrawIndexed(
+		meshEntity3->GetIndexCount(),
+		0,
+		0);
+
 	// IA
+	/*
 	// Shape 1
 	ID3D11Buffer* vBuffer1 = mesh1->GetVertexBuffer();
 	context->IASetVertexBuffers(0, 1, &vBuffer1, &stride, &offset);
@@ -290,7 +353,7 @@ void Game::Draw(float deltaTime, float totalTime)
 	context->DrawIndexed(
 		mesh3->GetIndexCount(), 
 		0, 
-		0);
+		0);*/
 
 	swapChain->Present(0, 0);
 }

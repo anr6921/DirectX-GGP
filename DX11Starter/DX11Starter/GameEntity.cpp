@@ -5,7 +5,7 @@ using namespace DirectX;
 GameEntity::GameEntity(Mesh* mesh)
 {
 	meshyboi = mesh; 
-	position = DirectX::XMFLOAT3(0.0f,0.0f,0.0f);
+	position = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 	rotation = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 	scale = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 
@@ -14,6 +14,27 @@ GameEntity::GameEntity(Mesh* mesh)
 GameEntity::~GameEntity()
 {
 	meshyboi = nullptr;
+}
+
+// Mesh accessors
+/*
+ID3D11Buffer* GameEntity::GetVertexBuffer()
+{
+	return meshyboi->GetVertexBuffer();
+}
+
+ID3D11Buffer* GameEntity::GetIndexBuffer()
+{
+	return meshyboi->GetVertexBuffer();
+}
+
+UINT GameEntity::GetIndexCount()
+{
+	return meshyboi->GetIndexCount();
+}*/
+Mesh* GameEntity::GetMesh()
+{
+	return meshyboi;
 }
 
 // Matrix accessors
@@ -58,6 +79,29 @@ DirectX::XMFLOAT3 GameEntity::GetScale()
 void GameEntity::SetScale(DirectX::XMFLOAT3 scl)
 {
 	scale = scl;
+}
+
+// Trasformation matrix
+void GameEntity::Transform(DirectX::XMMATRIX worldMat)
+{
+	/*
+	// Load in variables to be changed
+	XMVECTOR trans = XMLoadFloat3(&position);
+	XMVECTOR rot = XMLoadFloat3(&rotation);
+	XMVECTOR scl = XMLoadFloat3(&scale);
+
+	XMMATRIX worldMat = XMLoadFloat4x4(&worldMatrix);
+	XMMATRIX translation = XMMatrixTranslation(10,0,0);
+
+	// Calculate
+	//XMMATRIX world = scl * rot * trans;
+	worldMat = XMMatrixMultiply(worldMat, translation);*/
+
+	// Store results
+	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(worldMat));
+	
+	//vertexShader->SetMatrix4x4("world", entity1->GetWorldMatrix);
+	//printf("world: ", worldMatrix);
 }
 
 // Move methods

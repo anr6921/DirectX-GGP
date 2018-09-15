@@ -4,6 +4,7 @@
 #include "SimpleShader.h"
 #include <DirectXMath.h>
 #include "Mesh.h"
+#include "GameEntity.h"
 
 class Game 
 	: public DXCore
@@ -30,6 +31,11 @@ private:
 	Mesh* mesh1;
 	Mesh* mesh2;
 	Mesh* mesh3;
+
+	// Create Game entities
+	GameEntity* entity1;
+	GameEntity* entity2;
+	GameEntity* entity3;
 
 	// Initialization helper methods - feel free to customize, combine, etc.
 	void LoadShaders(); 

@@ -11,6 +11,15 @@ public:
 	GameEntity(Mesh* mesh);
 	~GameEntity();
 
+	/*
+	ID3D11Buffer * GetVertexBuffer();
+
+	ID3D11Buffer * GetIndexBuffer();
+
+	UINT GetIndexCount();*/
+
+	Mesh* GetMesh();
+
 	//Accessors
 	DirectX::XMFLOAT4X4 GetWorldMatrix();
 	void SetWorldMatrix(DirectX::XMFLOAT4X4 matrix);
@@ -20,6 +29,8 @@ public:
 	void SetRotation(DirectX::XMFLOAT3 rot);
 	DirectX::XMFLOAT3 GetScale();
 	void SetScale(DirectX::XMFLOAT3 scl);
+
+	void Transform(DirectX::XMMATRIX worldMat);
 
 	void MoveRelative(float x, float y, float z);
 
