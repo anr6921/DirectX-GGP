@@ -17,21 +17,6 @@ GameEntity::~GameEntity()
 }
 
 // Mesh accessors
-/*
-ID3D11Buffer* GameEntity::GetVertexBuffer()
-{
-	return meshyboi->GetVertexBuffer();
-}
-
-ID3D11Buffer* GameEntity::GetIndexBuffer()
-{
-	return meshyboi->GetVertexBuffer();
-}
-
-UINT GameEntity::GetIndexCount()
-{
-	return meshyboi->GetIndexCount();
-}*/
 Mesh* GameEntity::GetMesh()
 {
 	return meshyboi;
@@ -82,8 +67,9 @@ void GameEntity::SetScale(DirectX::XMFLOAT3 scl)
 }
 
 // Trasformation matrix
-void GameEntity::Transform(DirectX::XMMATRIX worldMat)
+void GameEntity::Transform(DirectX::XMMATRIX scl, DirectX::XMMATRIX rot, DirectX::XMMATRIX trans)
 {
+	XMMATRIX world = scl * rot * trans;
 	/*
 	// Load in variables to be changed
 	XMVECTOR trans = XMLoadFloat3(&position);
@@ -98,27 +84,5 @@ void GameEntity::Transform(DirectX::XMMATRIX worldMat)
 	worldMat = XMMatrixMultiply(worldMat, translation);*/
 
 	// Store results
-	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(worldMat));
-	
-	//vertexShader->SetMatrix4x4("world", entity1->GetWorldMatrix);
-	//printf("world: ", worldMatrix);
-}
-
-// Move methods
-void GameEntity::MoveRelative(float x, float y, float z)
-{
-	/*
-	// rotate desired movement by our rotation
-	XMVECTOR dir = XMVector3Rotate(
-		XMVectorSet(x, y, z, 0),
-		XMLoadFloat4()); //quaternion
-	)*/
-}
-
-void GameEntity::MoveAbsolute(float x, float y, float z)
-{
-	// currentPosition is an XMFLOAT3
-	position.x += x;
-	position.y += y;
-	position.z += z;
+	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(world));
 }

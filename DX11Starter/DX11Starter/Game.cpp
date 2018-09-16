@@ -61,6 +61,10 @@ Game::~Game()
 	delete entity1;
 	delete entity2;
 	delete entity3;
+	delete entity4;
+	delete entity5;
+	delete entity6;
+	delete entity7;
 }
 
 // --------------------------------------------------------
@@ -165,16 +169,16 @@ void Game::CreateBasicGeometry()
 
 	Vertex vertices2[] =
 	{
-		{ XMFLOAT3(+1.0f, +2.0f, +1.0f), blue },
-		{ XMFLOAT3(+2.5f, +0.0f, +1.0f), blue },
+		{ XMFLOAT3(+1.0f, +2.0f, +1.0f), red },
+		{ XMFLOAT3(+2.5f, +0.0f, +1.0f), green },
 		{ XMFLOAT3(-0.5f, +0.0f, +1.0f), red },
 	};
 
 	Vertex vertices3[] =
 	{
-		{ XMFLOAT3(-1.0f, +2.0f, +1.0f), green },
-		{ XMFLOAT3(+0.0f, +0.0f, +1.0f), blue },
-		{ XMFLOAT3(-2.5f, +0.0f, +1.0f), green },
+		{ XMFLOAT3(+0.0f, +1.0f, +0.0f), blue },
+		{ XMFLOAT3(+1.5f, -1.0f, +0.0f), blue },
+		{ XMFLOAT3(-1.5f, -1.0f, +0.0f), blue },
 	};
 
 	// Set up the indices, which tell us which vertices to use and in which order
@@ -188,9 +192,13 @@ void Game::CreateBasicGeometry()
 	mesh2 = new Mesh(vertices2, 3, indices, 3, device);
 	mesh3 = new Mesh(vertices3, 3, indices, 3, device);
 
-	entity1 = new GameEntity(mesh1);
+	entity1 = new GameEntity(mesh3);
 	entity2 = new GameEntity(mesh1);
 	entity3 = new GameEntity(mesh2);
+	entity4 = new GameEntity(mesh3);
+	entity5 = new GameEntity(mesh1);
+	entity6 = new GameEntity(mesh1);
+	entity7 = new GameEntity(mesh2);
 }
 
 
@@ -222,17 +230,49 @@ void Game::Update(float deltaTime, float totalTime)
 		Quit();
 
 	// Update position
+	// Entity 1
 	float sinTime = (sin(totalTime));
-	XMMATRIX scale = XMMatrixScaling(sinTime, sinTime, sinTime);
-	XMMATRIX rotation = XMMatrixRotationX(totalTime);
-	XMMATRIX translate = XMMatrixTranslation(1, 0, 0);
-	
-	XMMATRIX world = scale * rotation * translate;
-	entity1->Transform(world);
+	entity1->Transform(
+		XMMatrixScaling(sinTime, sinTime, sinTime),
+		XMMatrixRotationX(totalTime),
+		XMMatrixTranslation(1, 0, 0));
 
-	//XMFLOAT4X4& entity1Matrix = entity1->GetWorldMatrix;
-	//XMStoreFloat4x4(&entity1Matrix, XMMatrixTranspose(scale*rotation*translate));
+	// Entity 2
+	float cosTime = (cos(totalTime));
+	entity2->Transform(
+		XMMatrixScaling(cosTime, cosTime, cosTime),
+		XMMatrixRotationX(0),
+		XMMatrixTranslation(0, 0, 0));
 
+	// Entity 3
+	entity3->Transform(
+		XMMatrixScaling(1, 0.5, 1),
+		XMMatrixRotationY(totalTime),
+		XMMatrixTranslation(-2, 0, 0));
+
+	// Entity 4
+	entity4->Transform(
+		XMMatrixScaling(0.5, 0.25, 0.5),
+		XMMatrixRotationZ(totalTime),
+		XMMatrixTranslation(-2, -1, 0));
+
+	// Entity 5
+	entity5->Transform(
+		XMMatrixScaling(0.5, 0.25, 0.5),
+		XMMatrixRotationZ(totalTime),
+		XMMatrixTranslation(2, -1* totalTime, -0.5));
+
+	// Entity 6
+	entity6->Transform(
+		XMMatrixScaling(0.5, 0.5, 0.5),
+		XMMatrixRotationZ(totalTime),
+		XMMatrixTranslation(-1, -1, -0.5*totalTime));
+
+	// Entity 6
+	entity7->Transform(
+		XMMatrixScaling(0.5, 0.5, 0.5),
+		XMMatrixRotationZ(totalTime),
+		XMMatrixTranslation(2, 1, 0));
 	
 }
 
@@ -286,8 +326,6 @@ void Game::Draw(float deltaTime, float totalTime)
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 
-	// Pass world matrix into shader
-	vertexShader->SetMatrix4x4("world", entity1->GetWorldMatrix());
 	vertexShader->SetMatrix4x4("view", viewMatrix);
 	vertexShader->SetMatrix4x4("projection", projectionMatrix);
 	vertexShader->CopyAllBufferData();
@@ -295,8 +333,10 @@ void Game::Draw(float deltaTime, float totalTime)
 	vertexShader->SetShader();
 	pixelShader->SetShader();
 
-	// Draw game entities
-	// Entity 1
+	// Entity 1 - Pass world matrix into shader
+	vertexShader->SetMatrix4x4("world", entity1->GetWorldMatrix());
+	vertexShader->CopyAllBufferData();
+	// Draw Entity 1
 	Mesh* meshEntity1 = entity1->GetMesh();
 	ID3D11Buffer* vBuffer1 = meshEntity1->GetVertexBuffer();
 	context->IASetVertexBuffers(0, 1, &vBuffer1, &stride, &offset);
@@ -306,7 +346,11 @@ void Game::Draw(float deltaTime, float totalTime)
 		0,
 		0);
 
-	// Entity 2
+	// Entity 2 - pass into shader
+	// Pass world matrix into shader
+	vertexShader->SetMatrix4x4("world", entity2->GetWorldMatrix());
+	vertexShader->CopyAllBufferData();
+	// Draw Entity 2
 	Mesh* meshEntity2 = entity2->GetMesh();
 	ID3D11Buffer* vBuffer2 = meshEntity2->GetVertexBuffer();
 	context->IASetVertexBuffers(0, 1, &vBuffer2, &stride, &offset);
@@ -316,7 +360,11 @@ void Game::Draw(float deltaTime, float totalTime)
 		0,
 		0);
 
-	// Entity 3
+	// Entity 3 - pass into shader
+	// Pass world matrix into shader
+	vertexShader->SetMatrix4x4("world", entity3->GetWorldMatrix());
+	vertexShader->CopyAllBufferData();
+	// Draw Entity 3
 	Mesh* meshEntity3 = entity3->GetMesh();
 	ID3D11Buffer* vBuffer3 = meshEntity3->GetVertexBuffer();
 	context->IASetVertexBuffers(0, 1, &vBuffer3, &stride, &offset);
@@ -326,34 +374,63 @@ void Game::Draw(float deltaTime, float totalTime)
 		0,
 		0);
 
-	// IA
-	/*
-	// Shape 1
-	ID3D11Buffer* vBuffer1 = mesh1->GetVertexBuffer();
-	context->IASetVertexBuffers(0, 1, &vBuffer1, &stride, &offset);
-	context->IASetIndexBuffer(mesh1->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+	// Entity 4 - pass into shader
+	// Pass world matrix into shader
+	vertexShader->SetMatrix4x4("world", entity4->GetWorldMatrix());
+	vertexShader->CopyAllBufferData();
+	// Draw Entity 4
+	Mesh* meshEntity4 = entity4->GetMesh();
+	ID3D11Buffer* vBuffer4 = meshEntity4->GetVertexBuffer();
+	context->IASetVertexBuffers(0, 1, &vBuffer4, &stride, &offset);
+	context->IASetIndexBuffer(meshEntity4->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
 	context->DrawIndexed(
-		mesh1->GetIndexCount(),
-		0, 
+		meshEntity4->GetIndexCount(),
+		0,
 		0);
 
-	// Shape 2
-	ID3D11Buffer* vBuffer2 = mesh2->GetVertexBuffer();
-	context->IASetVertexBuffers(0, 1, &vBuffer2, &stride, &offset);
-	context->IASetIndexBuffer(mesh2->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+	// Entity 5 - pass into shader
+	// Pass world matrix into shader
+	vertexShader->SetMatrix4x4("world", entity5->GetWorldMatrix());
+	vertexShader->CopyAllBufferData();
+	// Draw Entity 5
+	Mesh* meshEntity5 = entity5->GetMesh();
+	ID3D11Buffer* vBuffer5 = meshEntity5->GetVertexBuffer();
+	context->IASetVertexBuffers(0, 1, &vBuffer5, &stride, &offset);
+	context->IASetIndexBuffer(meshEntity5->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
 	context->DrawIndexed(
-		mesh2->GetIndexCount(),
-		0, 
+		meshEntity5->GetIndexCount(),
+		0,
 		0);
 
-	// Shape 3
-	ID3D11Buffer* vBuffer3 = mesh3->GetVertexBuffer();
-	context->IASetVertexBuffers(0, 1, &vBuffer3, &stride, &offset);
-	context->IASetIndexBuffer(mesh3->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+	// Entity 6 - pass into shader
+	// Pass world matrix into shader
+	vertexShader->SetMatrix4x4("world", entity6->GetWorldMatrix());
+	vertexShader->CopyAllBufferData();
+	// Draw Entity 5
+	Mesh* meshEntity6 = entity6->GetMesh();
+	ID3D11Buffer* vBuffer6 = meshEntity6->GetVertexBuffer();
+	context->IASetVertexBuffers(0, 1, &vBuffer6, &stride, &offset);
+	context->IASetIndexBuffer(meshEntity6->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
 	context->DrawIndexed(
-		mesh3->GetIndexCount(), 
-		0, 
-		0);*/
+		meshEntity6->GetIndexCount(),
+		0,
+		0);
+
+	// Entity 7 - pass into shader
+	// Pass world matrix into shader
+	vertexShader->SetMatrix4x4("world", entity7->GetWorldMatrix());
+	vertexShader->CopyAllBufferData();
+	// Draw Entity 7
+	Mesh* meshEntity7 = entity7->GetMesh();
+	ID3D11Buffer* vBuffer7 = meshEntity7->GetVertexBuffer();
+	context->IASetVertexBuffers(0, 1, &vBuffer7, &stride, &offset);
+	context->IASetIndexBuffer(meshEntity7->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+	context->DrawIndexed(
+		meshEntity7->GetIndexCount(),
+		0,
+		0);
+
+
 
 	swapChain->Present(0, 0);
 }

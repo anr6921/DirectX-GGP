@@ -11,16 +11,8 @@ public:
 	GameEntity(Mesh* mesh);
 	~GameEntity();
 
-	/*
-	ID3D11Buffer * GetVertexBuffer();
-
-	ID3D11Buffer * GetIndexBuffer();
-
-	UINT GetIndexCount();*/
-
+	// Accessors
 	Mesh* GetMesh();
-
-	//Accessors
 	DirectX::XMFLOAT4X4 GetWorldMatrix();
 	void SetWorldMatrix(DirectX::XMFLOAT4X4 matrix);
 	DirectX::XMFLOAT3 GetPosition();
@@ -30,12 +22,8 @@ public:
 	DirectX::XMFLOAT3 GetScale();
 	void SetScale(DirectX::XMFLOAT3 scl);
 
-	void Transform(DirectX::XMMATRIX worldMat);
-
-	void MoveRelative(float x, float y, float z);
-
-	//Move methods
-	void MoveAbsolute(float x, float y, float z);
+	// Move Entity
+	void Transform(DirectX::XMMATRIX scl, DirectX::XMMATRIX rot, DirectX::XMMATRIX trans);
 
 private:
 	DirectX::XMFLOAT4X4 worldMatrix; // represents entities current position, rotation, and scale
