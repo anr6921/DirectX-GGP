@@ -42,10 +42,8 @@ void Camera::Update(float deltaTime)
 	XMVECTOR unitZ = XMVectorSet(0, 0, 1, 0);
 	// apply resulting matrix to default forward vector on Z axis
 	XMVECTOR dir = XMVector3Transform(unitZ, rot);
-	//XMVECTOR dir = XMVectorSet(0, 0, 1, 0);
 
 	XMVECTOR pos = DirectX::XMLoadFloat3(&position);
-		//XMVectorSet(0, 0, -5, 0);
 	//XMVECTOR dir = XMVectorSet(0, 0, 1, 0);
 	XMVECTOR up = XMVectorSet(0, 1, 0, 0);
 
@@ -88,4 +86,21 @@ void Camera::Update(float deltaTime)
 
 	// store in view matrix
 	DirectX::XMStoreFloat4x4(&viewMatrix, XMMatrixTranspose(V));
+}
+
+void Camera::rotateMousePosition(float mouseX, float mouseY)
+{
+	rotX += mouseX;
+	rotY += mouseY;
+}
+
+void Camera::updateProjectionMatrix(float width, float height)
+{
+	// Update our projection matrix since the window size changed
+	XMMATRIX P = XMMatrixPerspectiveFovLH(
+		0.25f * 3.1415926535f,	// Field of View Angle
+		(float)width / height,	// Aspect ratio
+		0.1f,				  	// Near clip plane distance
+		100.0f);			  	// Far clip plane distance
+	DirectX::XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
 }

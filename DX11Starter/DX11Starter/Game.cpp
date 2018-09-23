@@ -85,6 +85,8 @@ void Game::Init()
 	CreateMatrices();
 	CreateBasicGeometry();
 	camera = new Camera();
+	// Camera projection matrix
+	camera->updateProjectionMatrix(width, height);
 
 	// Tell the input assembler stage of the pipeline what kind of
 	// geometric primitives (points, lines or triangles) we want to draw.  
@@ -149,6 +151,8 @@ void Game::CreateMatrices()
 		0.1f,						// Near clip plane distance
 		100.0f);					// Far clip plane distance
 	DirectX::XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
+
+	
 }
 
 
@@ -224,6 +228,9 @@ void Game::OnResize()
 		0.1f,				  	// Near clip plane distance
 		100.0f);			  	// Far clip plane distance
 	DirectX::XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
+
+	// Camera class projection matrix
+	camera->updateProjectionMatrix(width, height);
 }
 
 // --------------------------------------------------------
@@ -338,7 +345,7 @@ void Game::Draw(float deltaTime, float totalTime)
 	UINT offset = 0;
 
 	vertexShader->SetMatrix4x4("view", camera->GetViewMatrix());
-	vertexShader->SetMatrix4x4("projection", projectionMatrix);
+	vertexShader->SetMatrix4x4("projection", camera->GetProjectionMatrix());
 	vertexShader->CopyAllBufferData();
 
 	vertexShader->SetShader();
@@ -488,6 +495,13 @@ void Game::OnMouseUp(WPARAM buttonState, int x, int y)
 void Game::OnMouseMove(WPARAM buttonState, int x, int y)
 {
 	// Add any custom code here...
+
+	if (buttonState & 0x0002)
+	{
+		float changeX = prevMousePos.x - x;
+		float changeY = prevMousePos.y - y;
+		camera->rotateMousePosition(changeX, changeY);
+	}
 
 	// Save the previous mouse position, so we have it for the future
 	prevMousePos.x = x;

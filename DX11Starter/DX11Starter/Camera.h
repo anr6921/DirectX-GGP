@@ -22,6 +22,10 @@ public:
 
 	void Update(float deltaTime);
 
+	void rotateMousePosition(float mouseX, float mouseY);
+
+	void updateProjectionMatrix(float width, float height);
+
 
 private:
 	DirectX::XMFLOAT4X4 viewMatrix; // viewer of the scene
