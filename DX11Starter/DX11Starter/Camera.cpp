@@ -33,13 +33,13 @@ void Camera::Update(float deltaTime)
 {
 	// Create rotation matrix based on current X and Y rotation values
 	XMVECTOR forward = XMQuaternionRotationRollPitchYaw(rotX, rotY, 0.0f);
-	XMMATRIX rot = XMMatrixRotationQuaternion(forward);
+	XMMATRIX rot = XMMatrixTranspose(XMMatrixRotationQuaternion(forward));
 
 	// Unit Vector Z
 	XMVECTOR unitZ = XMVectorSet(0, 0, 1, 0);
 	// apply resulting matrix to default forward vector on Z axis
-	//XMVECTOR dir = XMVector3Transform(unitZ, rot);
-	XMVECTOR dir = XMVectorSet(0, 0, 1, 0); // delete this before turning in
+	XMVECTOR dir = XMVector3Transform(unitZ, rot);
+	//XMVECTOR dir = XMVectorSet(0, 0, 1, 0); // delete this before turning in
 
 	XMVECTOR pos = DirectX::XMLoadFloat3(&position);
 	XMVECTOR up = XMVectorSet(0, 1, 0, 0);
@@ -47,6 +47,7 @@ void Camera::Update(float deltaTime)
 	// left vectors
 	XMVECTOR left = XMVector3Cross(dir, up);
 
+	// Key movement
 	if (GetAsyncKeyState('W') & 0x8000) // forwards
 	{
 		pos += dir * deltaTime;
@@ -87,8 +88,8 @@ void Camera::Update(float deltaTime)
 
 void Camera::rotateMousePosition(float mouseX, float mouseY)
 {
-	rotX += mouseX;
-	rotY += mouseY;
+	rotX += mouseY*0.005;
+	rotY += mouseX*0.005;
 }
 
 void Camera::updateProjectionMatrix(float width, float height)

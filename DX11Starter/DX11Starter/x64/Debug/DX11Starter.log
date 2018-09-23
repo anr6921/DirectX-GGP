@@ -1,7 +1,4 @@
-﻿  Game.cpp
-c:\users\anna\repos\ggp\directx-ggp\dx11starter\dx11starter\game.cpp(94): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-c:\users\anna\repos\ggp\directx-ggp\dx11starter\dx11starter\game.cpp(240): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-c:\users\anna\repos\ggp\directx-ggp\dx11starter\dx11starter\game.cpp(294): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-c:\users\anna\repos\ggp\directx-ggp\dx11starter\dx11starter\game.cpp(504): warning C4244: 'initializing': conversion from 'LONG' to 'float', possible loss of data
-c:\users\anna\repos\ggp\directx-ggp\dx11starter\dx11starter\game.cpp(505): warning C4244: 'initializing': conversion from 'LONG' to 'float', possible loss of data
+﻿  Camera.cpp
+c:\users\anna\repos\ggp\directx-ggp\dx11starter\dx11starter\camera.cpp(91): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+c:\users\anna\repos\ggp\directx-ggp\dx11starter\dx11starter\camera.cpp(92): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
   DX11Starter.vcxproj -> C:\Users\Anna\repos\ggp\DirectX-GGP\DX11Starter\x64\Debug\DX11Starter.exe
