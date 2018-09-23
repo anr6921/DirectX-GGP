@@ -70,6 +70,9 @@ Game::~Game()
 
 	// delete camera
 	delete camera;
+
+	// delete materials
+	delete material1;
 }
 
 // --------------------------------------------------------
@@ -85,6 +88,8 @@ void Game::Init()
 	CreateMatrices();
 	CreateBasicGeometry();
 	camera = new Camera();
+
+
 	// Camera projection matrix
 	camera->updateProjectionMatrix(width, height);
 
@@ -107,6 +112,8 @@ void Game::LoadShaders()
 
 	pixelShader = new SimplePixelShader(device, context);
 	pixelShader->LoadShaderFile(L"PixelShader.cso");
+
+	material1 = new Material(vertexShader, pixelShader);
 }
 
 
@@ -202,13 +209,13 @@ void Game::CreateBasicGeometry()
 	mesh2 = new Mesh(vertices2, 3, indices, 3, device);
 	mesh3 = new Mesh(vertices3, 3, indices, 3, device);
 
-	entity1 = new GameEntity(mesh3);
-	entity2 = new GameEntity(mesh1);
-	entity3 = new GameEntity(mesh2);
-	entity4 = new GameEntity(mesh3);
-	entity5 = new GameEntity(mesh1);
-	entity6 = new GameEntity(mesh1);
-	entity7 = new GameEntity(mesh2);
+	entity1 = new GameEntity(mesh3, material1);
+	entity2 = new GameEntity(mesh1, material1);
+	entity3 = new GameEntity(mesh2, material1);
+	entity4 = new GameEntity(mesh3, material1);
+	entity5 = new GameEntity(mesh1, material1);
+	entity6 = new GameEntity(mesh1, material1);
+	entity7 = new GameEntity(mesh2, material1);
 }
 
 
@@ -344,16 +351,8 @@ void Game::Draw(float deltaTime, float totalTime)
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 
-	vertexShader->SetMatrix4x4("view", camera->GetViewMatrix());
-	vertexShader->SetMatrix4x4("projection", camera->GetProjectionMatrix());
-	vertexShader->CopyAllBufferData();
-
-	vertexShader->SetShader();
-	pixelShader->SetShader();
-
 	// Entity 1 - Pass world matrix into shader
-	vertexShader->SetMatrix4x4("world", entity1->GetWorldMatrix());
-	vertexShader->CopyAllBufferData();
+	entity1->PrepareMaterial(camera->GetViewMatrix(), camera->GetProjectionMatrix());
 	// Draw Entity 1
 	Mesh* meshEntity1 = entity1->GetMesh();
 	ID3D11Buffer* vBuffer1 = meshEntity1->GetVertexBuffer();
@@ -366,8 +365,7 @@ void Game::Draw(float deltaTime, float totalTime)
 
 	// Entity 2 - pass into shader
 	// Pass world matrix into shader
-	vertexShader->SetMatrix4x4("world", entity2->GetWorldMatrix());
-	vertexShader->CopyAllBufferData();
+	entity2->PrepareMaterial(camera->GetViewMatrix(), camera->GetProjectionMatrix());
 	// Draw Entity 2
 	Mesh* meshEntity2 = entity2->GetMesh();
 	ID3D11Buffer* vBuffer2 = meshEntity2->GetVertexBuffer();
@@ -380,8 +378,7 @@ void Game::Draw(float deltaTime, float totalTime)
 
 	// Entity 3 - pass into shader
 	// Pass world matrix into shader
-	vertexShader->SetMatrix4x4("world", entity3->GetWorldMatrix());
-	vertexShader->CopyAllBufferData();
+	entity3->PrepareMaterial(camera->GetViewMatrix(), camera->GetProjectionMatrix());
 	// Draw Entity 3
 	Mesh* meshEntity3 = entity3->GetMesh();
 	ID3D11Buffer* vBuffer3 = meshEntity3->GetVertexBuffer();
@@ -394,8 +391,7 @@ void Game::Draw(float deltaTime, float totalTime)
 
 	// Entity 4 - pass into shader
 	// Pass world matrix into shader
-	vertexShader->SetMatrix4x4("world", entity4->GetWorldMatrix());
-	vertexShader->CopyAllBufferData();
+	entity4->PrepareMaterial(camera->GetViewMatrix(), camera->GetProjectionMatrix());
 	// Draw Entity 4
 	Mesh* meshEntity4 = entity4->GetMesh();
 	ID3D11Buffer* vBuffer4 = meshEntity4->GetVertexBuffer();
@@ -408,8 +404,7 @@ void Game::Draw(float deltaTime, float totalTime)
 
 	// Entity 5 - pass into shader
 	// Pass world matrix into shader
-	vertexShader->SetMatrix4x4("world", entity5->GetWorldMatrix());
-	vertexShader->CopyAllBufferData();
+	entity5->PrepareMaterial(camera->GetViewMatrix(), camera->GetProjectionMatrix());
 	// Draw Entity 5
 	Mesh* meshEntity5 = entity5->GetMesh();
 	ID3D11Buffer* vBuffer5 = meshEntity5->GetVertexBuffer();
@@ -422,8 +417,7 @@ void Game::Draw(float deltaTime, float totalTime)
 
 	// Entity 6 - pass into shader
 	// Pass world matrix into shader
-	vertexShader->SetMatrix4x4("world", entity6->GetWorldMatrix());
-	vertexShader->CopyAllBufferData();
+	entity6->PrepareMaterial(camera->GetViewMatrix(), camera->GetProjectionMatrix());
 	// Draw Entity 5
 	Mesh* meshEntity6 = entity6->GetMesh();
 	ID3D11Buffer* vBuffer6 = meshEntity6->GetVertexBuffer();
@@ -436,8 +430,7 @@ void Game::Draw(float deltaTime, float totalTime)
 
 	// Entity 7 - pass into shader
 	// Pass world matrix into shader
-	vertexShader->SetMatrix4x4("world", entity7->GetWorldMatrix());
-	vertexShader->CopyAllBufferData();
+	entity7->PrepareMaterial(camera->GetViewMatrix(), camera->GetProjectionMatrix());
 	// Draw Entity 7
 	Mesh* meshEntity7 = entity7->GetMesh();
 	ID3D11Buffer* vBuffer7 = meshEntity7->GetVertexBuffer();

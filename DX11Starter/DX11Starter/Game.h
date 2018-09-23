@@ -6,6 +6,7 @@
 #include "Mesh.h"
 #include "GameEntity.h"
 #include "Camera.h"
+#include "Material.h"
 
 class Game 
 	: public DXCore
@@ -44,6 +45,9 @@ private:
 
 	// Camera object
 	Camera* camera;
+
+	// Material object
+	Material* material1;
 
 	// Initialization helper methods - feel free to customize, combine, etc.
 	void LoadShaders(); 

@@ -4,11 +4,12 @@
 #include "SimpleShader.h"
 #include <DirectXMath.h>
 #include "Mesh.h"
+#include "Material.h"
 
 class GameEntity
 {
 public:
-	GameEntity(Mesh* mesh);
+	GameEntity(Mesh* mesh, Material* mat);
 	~GameEntity();
 
 	// Accessors
@@ -25,12 +26,16 @@ public:
 	// Move Entity
 	void Transform(DirectX::XMMATRIX scl, DirectX::XMMATRIX rot, DirectX::XMMATRIX trans);
 
+	void PrepareMaterial(DirectX::XMFLOAT4X4 viewMatrix, DirectX::XMFLOAT4X4 projectionMatrix);
+
 private:
 	DirectX::XMFLOAT4X4 worldMatrix; // represents entities current position, rotation, and scale
 	DirectX::XMFLOAT3 position;
 	DirectX::XMFLOAT3 rotation;
 	DirectX::XMFLOAT3 scale;
+
 	Mesh* meshyboi;
+	Material* materialboi;
 };
 
 

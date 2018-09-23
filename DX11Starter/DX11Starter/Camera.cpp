@@ -35,16 +35,13 @@ void Camera::Update(float deltaTime)
 	XMVECTOR forward = XMQuaternionRotationRollPitchYaw(rotX, rotY, 0.0f);
 	XMMATRIX rot = XMMatrixRotationQuaternion(forward);
 
-	//XMMatrixRotationRollPitchYaw(rotX, rotY, 0.0f);
-	//DirectX::XMVECTOR forward = XMQuaternionRotationRollPitchYaw(rotX, rotY, 0.0f);
-
 	// Unit Vector Z
 	XMVECTOR unitZ = XMVectorSet(0, 0, 1, 0);
 	// apply resulting matrix to default forward vector on Z axis
-	XMVECTOR dir = XMVector3Transform(unitZ, rot);
+	//XMVECTOR dir = XMVector3Transform(unitZ, rot);
+	XMVECTOR dir = XMVectorSet(0, 0, 1, 0); // delete this before turning in
 
 	XMVECTOR pos = DirectX::XMLoadFloat3(&position);
-	//XMVECTOR dir = XMVectorSet(0, 0, 1, 0);
 	XMVECTOR up = XMVectorSet(0, 1, 0, 0);
 
 	// left vectors

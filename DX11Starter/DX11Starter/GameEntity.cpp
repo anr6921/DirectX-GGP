@@ -2,9 +2,10 @@
 
 using namespace DirectX;
 
-GameEntity::GameEntity(Mesh* mesh)
+GameEntity::GameEntity(Mesh* mesh, Material* mat)
 {
 	meshyboi = mesh; 
+	materialboi = mat;
 	position = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 	rotation = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 	scale = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -14,6 +15,7 @@ GameEntity::GameEntity(Mesh* mesh)
 GameEntity::~GameEntity()
 {
 	meshyboi = nullptr;
+	materialboi = nullptr;
 }
 
 // Mesh accessors
@@ -85,4 +87,23 @@ void GameEntity::Transform(DirectX::XMMATRIX scl, DirectX::XMMATRIX rot, DirectX
 
 	// Store results
 	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(world));
+}
+
+void GameEntity::PrepareMaterial(XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectionMatrix)
+{
+	SimpleVertexShader* vertexShader = materialboi->GetVertexShader();
+	SimplePixelShader* pixelShader = materialboi->GetPixelShader();
+
+	//set basic shader data
+	vertexShader->SetMatrix4x4("view", viewMatrix);
+	vertexShader->SetMatrix4x4("projection", projectionMatrix);
+	vertexShader->SetMatrix4x4("world", worldMatrix);
+
+	// set shaders
+	vertexShader->SetShader();
+	pixelShader->SetShader();
+
+	// copy buffer data
+	vertexShader->CopyAllBufferData();
+	pixelShader->CopyAllBufferData();
 }
