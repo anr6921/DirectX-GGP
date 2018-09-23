@@ -5,6 +5,7 @@
 #include <DirectXMath.h>
 #include "Mesh.h"
 #include "GameEntity.h"
+#include "Camera.h"
 
 class Game 
 	: public DXCore
@@ -40,6 +41,9 @@ private:
 	GameEntity* entity5;
 	GameEntity* entity6;
 	GameEntity* entity7;
+
+	// Camera object
+	Camera* camera;
 
 	// Initialization helper methods - feel free to customize, combine, etc.
 	void LoadShaders(); 

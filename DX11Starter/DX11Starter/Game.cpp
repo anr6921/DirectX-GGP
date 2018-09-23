@@ -1,6 +1,8 @@
 #include "Game.h"
 #include "Vertex.h"
 #include "Mesh.h"
+#include "Camera.h"
+#include <DirectXMath.h>
 
 // For the DirectX Math library
 using namespace DirectX;
@@ -65,6 +67,9 @@ Game::~Game()
 	delete entity5;
 	delete entity6;
 	delete entity7;
+
+	// delete camera
+	delete camera;
 }
 
 // --------------------------------------------------------
@@ -79,6 +84,7 @@ void Game::Init()
 	LoadShaders();
 	CreateMatrices();
 	CreateBasicGeometry();
+	camera = new Camera();
 
 	// Tell the input assembler stage of the pipeline what kind of
 	// geometric primitives (points, lines or triangles) we want to draw.  
@@ -116,7 +122,7 @@ void Game::CreateMatrices()
 	//    an identity matrix.  This is just to show that HLSL expects a different
 	//    matrix (column major vs row major) than the DirectX Math library
 	XMMATRIX W = XMMatrixIdentity();
-	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(W)); // Transpose for HLSL!
+	DirectX::XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(W)); // Transpose for HLSL!
 
 	// Create the View matrix
 	// - In an actual game, recreate this matrix every time the camera 
@@ -132,7 +138,7 @@ void Game::CreateMatrices()
 		pos,     // The position of the "camera"
 		dir,     // Direction the camera is looking
 		up);     // "Up" direction in 3D space (prevents roll)
-	XMStoreFloat4x4(&viewMatrix, XMMatrixTranspose(V)); // Transpose for HLSL!
+	DirectX::XMStoreFloat4x4(&viewMatrix, XMMatrixTranspose(V)); // Transpose for HLSL!
 
 	// Create the Projection matrix
 	// - This should match the window's aspect ratio, and also update anytime
@@ -142,7 +148,7 @@ void Game::CreateMatrices()
 		(float)width / height,		// Aspect ratio
 		0.1f,						// Near clip plane distance
 		100.0f);					// Far clip plane distance
-	XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
+	DirectX::XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
 }
 
 
@@ -217,7 +223,7 @@ void Game::OnResize()
 		(float)width / height,	// Aspect ratio
 		0.1f,				  	// Near clip plane distance
 		100.0f);			  	// Far clip plane distance
-	XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
+	DirectX::XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
 }
 
 // --------------------------------------------------------
@@ -229,7 +235,12 @@ void Game::Update(float deltaTime, float totalTime)
 	if (GetAsyncKeyState(VK_ESCAPE))
 		Quit();
 
-	// Update position
+	// Update positions
+
+	// Camera 
+	camera->Update(deltaTime);
+
+	
 	// Entity 1
 	float sinTime = (sin(totalTime));
 	entity1->Transform(
@@ -240,7 +251,7 @@ void Game::Update(float deltaTime, float totalTime)
 	// Entity 2
 	float cosTime = (cos(totalTime));
 	entity2->Transform(
-		XMMatrixScaling(cosTime, cosTime, cosTime),
+		XMMatrixScaling(1, 1, 1),
 		XMMatrixRotationX(0),
 		XMMatrixTranslation(0, 0, 0));
 
@@ -326,7 +337,7 @@ void Game::Draw(float deltaTime, float totalTime)
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 
-	vertexShader->SetMatrix4x4("view", viewMatrix);
+	vertexShader->SetMatrix4x4("view", camera->GetViewMatrix());
 	vertexShader->SetMatrix4x4("projection", projectionMatrix);
 	vertexShader->CopyAllBufferData();
 
