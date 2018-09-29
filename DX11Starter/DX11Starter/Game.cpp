@@ -179,23 +179,25 @@ void Game::CreateBasicGeometry()
 	//    over to a DirectX-controlled data structure (the vertex buffer)
 	Vertex vertices1[] =
 	{
-		{ XMFLOAT3(+0.0f, +1.0f, +0.0f), red },
-		{ XMFLOAT3(+1.5f, -1.0f, +0.0f), blue },
-		{ XMFLOAT3(-1.5f, -1.0f, +0.0f), green },
+		{ XMFLOAT3(+0.0f, +1.0f, +0.0f), // position
+		XMFLOAT3(+0.0f, +0.0f, +1.0f), // normal
+		XMFLOAT2(0.0f,0.0f)}, // UV
+		{ XMFLOAT3(+1.5f, -1.0f, +0.0f), XMFLOAT3(+0.0f, +0.0f, +1.0f), XMFLOAT2(0.0f,0.0f) },
+		{ XMFLOAT3(-1.5f, -1.0f, +0.0f), XMFLOAT3(+0.0f, +0.0f, +1.0f), XMFLOAT2(0.0f,0.0f) },
 	};
 
 	Vertex vertices2[] =
 	{
-		{ XMFLOAT3(+1.0f, +2.0f, +1.0f), red },
-		{ XMFLOAT3(+2.5f, +0.0f, +1.0f), green },
-		{ XMFLOAT3(-0.5f, +0.0f, +1.0f), red },
+		{ XMFLOAT3(+1.0f, +2.0f, +1.0f), XMFLOAT3(+0.0f, +0.0f, +1.0f), XMFLOAT2(0.0f,0.0f) },
+		{ XMFLOAT3(+2.5f, +0.0f, +1.0f), XMFLOAT3(+0.0f, +0.0f, +1.0f), XMFLOAT2(0.0f,0.0f) },
+		{ XMFLOAT3(-0.5f, +0.0f, +1.0f), XMFLOAT3(+0.0f, +0.0f, +1.0f), XMFLOAT2(0.0f,0.0f) },
 	};
 
 	Vertex vertices3[] =
 	{
-		{ XMFLOAT3(+0.0f, +1.0f, +0.0f), blue },
-		{ XMFLOAT3(+1.5f, -1.0f, +0.0f), blue },
-		{ XMFLOAT3(-1.5f, -1.0f, +0.0f), blue },
+		{ XMFLOAT3(+0.0f, +1.0f, +0.0f), XMFLOAT3(+0.0f, +0.0f, +1.0f), XMFLOAT2(0.0f,0.0f) },
+		{ XMFLOAT3(+1.5f, -1.0f, +0.0f), XMFLOAT3(+0.0f, +0.0f, +1.0f), XMFLOAT2(0.0f,0.0f) },
+		{ XMFLOAT3(-1.5f, -1.0f, +0.0f), XMFLOAT3(+0.0f, +0.0f, +1.0f), XMFLOAT2(0.0f,0.0f) },
 	};
 
 	// Set up the indices, which tell us which vertices to use and in which order

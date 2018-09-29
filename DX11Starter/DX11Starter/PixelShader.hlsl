@@ -14,7 +14,9 @@ struct VertexToPixel
 	//  |    |                |
 	//  v    v                v
 	float4 position		: SV_POSITION;
-	float4 color		: COLOR;
+	//float4 color		: COLOR;        // RGBA color
+	float3 normal		: NORMAL;
+	float2 uv			: TEXCOORD;
 };
 
 // --------------------------------------------------------
@@ -37,6 +39,6 @@ float4 main(VertexToPixel input) : SV_TARGET
 	// define an ambient light color
 	float3 ambient = float3(0.15f, 0.25f, 0.35f);
 
-	return float4(ambient, 0);
-
+	//return float4(ambient, 0);
+	return float4(1, 0, 0, 1);
 }

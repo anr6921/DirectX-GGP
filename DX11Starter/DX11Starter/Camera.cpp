@@ -4,8 +4,8 @@ using namespace DirectX;
 
 Camera::Camera()
 {
-	rotX = 1.0f;
-	rotY = 1.0f;
+	rotX = 0.0f;
+	rotY = 0.0f;
 	position = XMFLOAT3(0.f, 0.f, -5.f);
 }
 
