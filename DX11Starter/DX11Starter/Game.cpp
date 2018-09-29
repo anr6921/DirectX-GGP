@@ -207,17 +207,18 @@ void Game::CreateBasicGeometry()
 	// - But just to see how it's done...
 	UINT indices[] = { 0, 1, 2 };
 
-	mesh1 = new Mesh(vertices1, 3, indices, 3, device);
+	mesh1 = new Mesh("cube.obj", device);
 	mesh2 = new Mesh(vertices2, 3, indices, 3, device);
 	mesh3 = new Mesh(vertices3, 3, indices, 3, device);
 
+
 	entity1 = new GameEntity(mesh3, material1);
-	entity2 = new GameEntity(mesh1, material1);
-	entity3 = new GameEntity(mesh2, material1);
+	entity2 = new GameEntity(mesh2, material1);
+	entity3 = new GameEntity(mesh3, material1);
 	entity4 = new GameEntity(mesh3, material1);
-	entity5 = new GameEntity(mesh1, material1);
-	entity6 = new GameEntity(mesh1, material1);
-	entity7 = new GameEntity(mesh2, material1);
+	entity5 = new GameEntity(mesh3, material1);
+	entity6 = new GameEntity(mesh3, material1);
+	entity7 = new GameEntity(mesh1, material1);
 }
 
 
@@ -437,7 +438,7 @@ void Game::Draw(float deltaTime, float totalTime)
 	Mesh* meshEntity7 = entity7->GetMesh();
 	ID3D11Buffer* vBuffer7 = meshEntity7->GetVertexBuffer();
 	context->IASetVertexBuffers(0, 1, &vBuffer7, &stride, &offset);
-	context->IASetIndexBuffer(meshEntity7->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+	//context->IASetIndexBuffer(meshEntity7->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
 	context->DrawIndexed(
 		meshEntity7->GetIndexCount(),
 		0,

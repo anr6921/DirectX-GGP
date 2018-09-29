@@ -6,11 +6,13 @@
 class Mesh
 {
 public:
+	Mesh(char* objFile, ID3D11Device* device);
 	Mesh(Vertex* vertices, UINT numVertices, UINT* indices, UINT numIndices, ID3D11Device* device);
 	~Mesh();
 	ID3D11Buffer* GetVertexBuffer();
 	ID3D11Buffer* GetIndexBuffer();
 	UINT GetIndexCount();
+	void SetBuffers(Vertex * vertices, UINT numVertices, UINT * indices, UINT numIndices, ID3D11Device * device);
 private:
 	// Buffers to hold actual geometry data
 	ID3D11Buffer* vertexBuffer;

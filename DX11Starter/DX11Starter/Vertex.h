@@ -12,7 +12,7 @@ struct Vertex
 {
 	XMFLOAT3 Position;	    // The position of the vertex
 	//DirectX::XMFLOAT4 Color;        // The color of the vertex
-	XMFLOAT3 normal;
-	XMFLOAT2 uv;
+	XMFLOAT3 Normal;
+	XMFLOAT2 UV;
 
 };
