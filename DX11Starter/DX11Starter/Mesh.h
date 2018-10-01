@@ -11,14 +11,16 @@ public:
 	~Mesh();
 	ID3D11Buffer* GetVertexBuffer();
 	ID3D11Buffer* GetIndexBuffer();
-	UINT GetIndexCount();
-	void SetBuffers(Vertex * vertices, UINT numVertices, UINT * indices, UINT numIndices, ID3D11Device * device);
+	int GetIndexCount();
+	
 private:
 	// Buffers to hold actual geometry data
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexBuffer;
 
 	// how many indices are in the mesh's index buffer - used when drawing
-	UINT bufferIndices;
+	int bufferIndices;
+
+	void SetBuffers(Vertex * vertices, int numVertices, UINT* indices, int numIndices, ID3D11Device * device);
 };
 

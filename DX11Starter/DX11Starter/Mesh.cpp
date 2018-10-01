@@ -177,7 +177,11 @@ Mesh::Mesh(char* objFile, ID3D11Device* device) {
 	{
 		SetBuffers(&verts[i], vertCounter, &indices[i], vertCounter, device);
 	}*/
+	//bufferIndices = numIndices;
+
 	SetBuffers(&verts[0], vertCounter, &indices[0], vertCounter, device);
+
+
 }
 Mesh::Mesh(Vertex* vertices, UINT numVertices, UINT* indices, UINT numIndices, ID3D11Device* device)
 {
@@ -239,14 +243,15 @@ ID3D11Buffer* Mesh::GetIndexBuffer()
 	return indexBuffer;
 }
 
-UINT Mesh::GetIndexCount()
+int Mesh::GetIndexCount()
 {
 	return bufferIndices;
 }
 
-void Mesh::SetBuffers(Vertex* vertices, UINT numVertices, UINT* indices, UINT numIndices, ID3D11Device* device)
+void Mesh::SetBuffers(Vertex* vertices, int numVertices, UINT* indices, int numIndices, ID3D11Device* device)
 {
-	bufferIndices = numIndices;
+	//bufferIndices = numIndices;
+	this->bufferIndices = numVertices;
 
 	//Vertex Buffer
 	// Create the VERTEX BUFFER description -----------------------------------
@@ -283,4 +288,7 @@ void Mesh::SetBuffers(Vertex* vertices, UINT numVertices, UINT* indices, UINT nu
 	initialIndexData.pSysMem = indices;
 
 	device->CreateBuffer(&ibd, &initialIndexData, &indexBuffer);
+
+	// Save the indices
+	//this->bufferIndices = numVertices;
 }

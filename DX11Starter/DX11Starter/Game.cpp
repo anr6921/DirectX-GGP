@@ -81,21 +81,21 @@ Game::~Game()
 // --------------------------------------------------------
 void Game::Init()
 {
-	// Helper methods for loading shaders, creating some basic
-	// geometry to draw and some simple camera matrices.
-	//  - You'll be expanding and/or replacing these later
 	LoadShaders();
 	CreateMatrices();
 	CreateBasicGeometry();
 	camera = new Camera();
 
+	// Set Directional light values
+	light.AmbientColor = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	light.DiffuseColor = XMFLOAT4(0, 0, 1, 1);
+	light.Direction = XMFLOAT3(1, -1, 0);
 
 	// Camera projection matrix
 	camera->updateProjectionMatrix(width, height);
 
 	// Tell the input assembler stage of the pipeline what kind of
 	// geometric primitives (points, lines or triangles) we want to draw.  
-	// Essentially: "What kind of shape should the GPU draw with our data?"
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
@@ -168,15 +168,12 @@ void Game::CreateMatrices()
 // --------------------------------------------------------
 void Game::CreateBasicGeometry()
 {
-	// Create some temporary variables to represent colors
 	// - Not necessary, just makes things more readable
 	XMFLOAT4 red = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 	XMFLOAT4 green = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 	XMFLOAT4 blue = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
 
-	// Set up the vertices of the triangle we would like to draw
-	// - We're going to copy this array, exactly as it exists in memory
-	//    over to a DirectX-controlled data structure (the vertex buffer)
+	// Set up the vertices of the triangle 
 	Vertex vertices1[] =
 	{
 		{ XMFLOAT3(+0.0f, +1.0f, +0.0f), // position
@@ -207,7 +204,7 @@ void Game::CreateBasicGeometry()
 	// - But just to see how it's done...
 	UINT indices[] = { 0, 1, 2 };
 
-	mesh1 = new Mesh("cube.obj", device);
+	mesh1 = new Mesh("../../Assets/cone.obj", device);
 	mesh2 = new Mesh(vertices2, 3, indices, 3, device);
 	mesh3 = new Mesh(vertices3, 3, indices, 3, device);
 
@@ -261,11 +258,12 @@ void Game::Update(float deltaTime, float totalTime)
 	// Entity 1
 	float sinTime = (sin(totalTime));
 	entity1->Transform(
-		XMMatrixScaling(sinTime, sinTime, sinTime),
-		XMMatrixRotationX(totalTime),
-		XMMatrixTranslation(1, 0, 0));
+		XMMatrixScaling(1, 1, 1),
+		XMMatrixRotationX(0),
+		XMMatrixTranslation(0, 0, 0));
 
 	// Entity 2
+	
 	float cosTime = (cos(totalTime));
 	entity2->Transform(
 		XMMatrixScaling(1, 1, 1),
@@ -297,10 +295,10 @@ void Game::Update(float deltaTime, float totalTime)
 		XMMatrixTranslation(-1, -1, -0.5*totalTime));
 
 	// Entity 6
-	entity7->Transform(
-		XMMatrixScaling(0.5, 0.5, 0.5),
-		XMMatrixRotationZ(totalTime),
-		XMMatrixTranslation(2, 1, 0));
+	//entity7->Transform(
+		//XMMatrixScaling(0.5, 0.5, 0.5),
+		//XMMatrixRotationZ(totalTime),
+		//XMMatrixTranslation(2, 1, 0));
 	
 }
 
@@ -354,6 +352,11 @@ void Game::Draw(float deltaTime, float totalTime)
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 
+	// Entity 1 - Pass light struct into pixel shader
+	pixelShader->SetData(
+		"light", // name of the (eventual) variable in the shader
+		&light, // address of the data to copy
+		sizeof(DirectionalLight)); //the size of the data to copy
 	// Entity 1 - Pass world matrix into shader
 	entity1->PrepareMaterial(camera->GetViewMatrix(), camera->GetProjectionMatrix());
 	// Draw Entity 1
@@ -368,6 +371,7 @@ void Game::Draw(float deltaTime, float totalTime)
 
 	// Entity 2 - pass into shader
 	// Pass world matrix into shader
+	/*
 	entity2->PrepareMaterial(camera->GetViewMatrix(), camera->GetProjectionMatrix());
 	// Draw Entity 2
 	Mesh* meshEntity2 = entity2->GetMesh();
@@ -429,7 +433,7 @@ void Game::Draw(float deltaTime, float totalTime)
 	context->DrawIndexed(
 		meshEntity6->GetIndexCount(),
 		0,
-		0);
+		0);*/
 
 	// Entity 7 - pass into shader
 	// Pass world matrix into shader
@@ -438,13 +442,11 @@ void Game::Draw(float deltaTime, float totalTime)
 	Mesh* meshEntity7 = entity7->GetMesh();
 	ID3D11Buffer* vBuffer7 = meshEntity7->GetVertexBuffer();
 	context->IASetVertexBuffers(0, 1, &vBuffer7, &stride, &offset);
-	//context->IASetIndexBuffer(meshEntity7->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+	context->IASetIndexBuffer(meshEntity7->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
 	context->DrawIndexed(
 		meshEntity7->GetIndexCount(),
 		0,
 		0);
-
-
 
 	swapChain->Present(0, 0);
 }
