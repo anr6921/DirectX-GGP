@@ -95,15 +95,14 @@ void GameEntity::PrepareMaterial(XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectionMat
 	SimplePixelShader* pixelShader = materialboi->GetPixelShader();
 
 	//set basic shader data
+	vertexShader->SetMatrix4x4("world", worldMatrix);
 	vertexShader->SetMatrix4x4("view", viewMatrix);
 	vertexShader->SetMatrix4x4("projection", projectionMatrix);
-	vertexShader->SetMatrix4x4("world", worldMatrix);
 
 	// set shaders
 	vertexShader->SetShader();
-	pixelShader->SetShader();
-
-	// copy buffer data
 	vertexShader->CopyAllBufferData();
+
+	pixelShader->SetShader();
 	pixelShader->CopyAllBufferData();
 }

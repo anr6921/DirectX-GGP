@@ -6,7 +6,7 @@
 class Mesh
 {
 public:
-	Mesh(char* objFile, ID3D11Device* device);
+	Mesh(const char* objFile, ID3D11Device* device);
 	Mesh(Vertex* vertices, UINT numVertices, UINT* indices, UINT numIndices, ID3D11Device* device);
 	~Mesh();
 	ID3D11Buffer* GetVertexBuffer();

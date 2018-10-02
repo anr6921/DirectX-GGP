@@ -205,11 +205,10 @@ void Game::CreateBasicGeometry()
 	UINT indices[] = { 0, 1, 2 };
 
 	mesh1 = new Mesh("../../Assets/cone.obj", device);
-	mesh2 = new Mesh(vertices2, 3, indices, 3, device);
+	mesh2 = new Mesh("../../Assets/sphere.obj", device);
 	mesh3 = new Mesh(vertices3, 3, indices, 3, device);
 
-
-	entity1 = new GameEntity(mesh3, material1);
+	entity1 = new GameEntity(mesh2, material1);
 	entity2 = new GameEntity(mesh2, material1);
 	entity3 = new GameEntity(mesh3, material1);
 	entity4 = new GameEntity(mesh3, material1);
@@ -255,6 +254,7 @@ void Game::Update(float deltaTime, float totalTime)
 	camera->Update(deltaTime);
 
 	
+	
 	// Entity 1
 	float sinTime = (sin(totalTime));
 	entity1->Transform(
@@ -294,11 +294,11 @@ void Game::Update(float deltaTime, float totalTime)
 		XMMatrixRotationZ(totalTime),
 		XMMatrixTranslation(-1, -1, -0.5*totalTime));
 
-	// Entity 6
-	//entity7->Transform(
-		//XMMatrixScaling(0.5, 0.5, 0.5),
-		//XMMatrixRotationZ(totalTime),
-		//XMMatrixTranslation(2, 1, 0));
+	// Entity 7
+	entity7->Transform(
+		XMMatrixScaling(0.5, 0.5, 0.5),
+		XMMatrixRotationZ(0),
+		XMMatrixTranslation(2, 1, 0));
 	
 }
 
@@ -320,35 +320,6 @@ void Game::Draw(float deltaTime, float totalTime)
 		1.0f,
 		0);
 
-	// Send data to shader variables
-	//  - Do this ONCE PER OBJECT you're drawing
-	//  - This is actually a complex process of copying data to a local buffer
-	//    and then copying that entire buffer to the GPU.  
-	//  - The "SimpleShader" class handles all of that for you.
-	//vertexShader->SetMatrix4x4("world", worldMatrix);
-	//vertexShader->SetMatrix4x4("view", viewMatrix);
-	//vertexShader->SetMatrix4x4("projection", projectionMatrix);
-
-	// Once you've set all of the data you care to change for
-	// the next draw call, you need to actually send it to the GPU
-	//  - If you skip this, the "SetMatrix" calls above won't make it to the GPU!
-	//vertexShader->CopyAllBufferData();
-
-	// Set the vertex and pixel shaders to use for the next Draw() command
-	//  - These don't technically need to be set every frame...YET
-	//  - Once you start applying different shaders to different objects,
-	//    you'll need to swap the current shaders before each draw
-	//vertexShader->SetShader();
-	//pixelShader->SetShader();
-
-	/*
-	// Set buffers in the input assembler
-	//  - Do this ONCE PER OBJECT you're drawing, since each object might
-	//    have different geometry.
-	
-	context->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
-	context->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	*/
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 

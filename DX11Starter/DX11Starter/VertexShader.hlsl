@@ -19,33 +19,19 @@ cbuffer externalData : register(b0)
 // - Each variable must have a semantic, which defines its usage
 struct VertexShaderInput
 { 
-	// Data type
-	//  |
-	//  |   Name          Semantic
-	//  |    |                |
-	//  v    v                v
 	float3 position		: POSITION;     // XYZ position
 	//float4 color		: COLOR;        // RGBA color
 	float3 normal		: NORMAL;
 	float2 uv			: TEXCOORD;
 };
 
-// Struct representing the data we're sending down the pipeline
-// - Should match our pixel shader's input (hence the name: Vertex to Pixel)
-// - At a minimum, we need a piece of data defined tagged as SV_POSITION
-// - The name of the struct itself is unimportant, but should be descriptive
-// - Each variable must have a semantic, which defines its usage
 struct VertexToPixel
 {
-	// Data type
-	//  |
-	//  |   Name          Semantic
-	//  |    |                |
-	//  v    v                v
 	float4 position		: SV_POSITION;	// XYZW position (System Value Position)
 	//float4 color		: COLOR;        // RGBA color
 	float3 normal		: NORMAL;
 	float2 uv			: TEXCOORD;
+	//float3 worldPos		: POSITION;
 };
 
 // --------------------------------------------------------
@@ -76,8 +62,11 @@ VertexToPixel main( VertexShaderInput input )
 	// screen and the distance (Z) from the camera (the "depth" of the pixel)
 	output.position = mul(float4(input.position, 1.0f), worldViewProj);
 
+	// Calculate the world position of this vert
+	//output.worldPos = mul(float4(input.position, 1.0f), world).xyz;
+
 	output.normal = mul(input.normal, (float3x3)world);
-	//output.normal = 
+
 	output.uv = input.uv;
 
 	// Pass the color through 
