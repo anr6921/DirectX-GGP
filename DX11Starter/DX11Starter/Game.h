@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "Material.h"
 #include "Lights.h"
+#include "WICTextureLoader.h"
 
 class Game 
 	: public DXCore
@@ -49,6 +50,12 @@ private:
 
 	// Material object
 	Material* material1;
+	Material* material2;
+
+	// Texture resources
+	ID3D11ShaderResourceView* tileSRV;
+	ID3D11ShaderResourceView* grassSRV;
+	ID3D11SamplerState* sampler;
 
 	// Lights
 	DirectionalLight light;

@@ -14,6 +14,7 @@ public:
 
 	// Accessors
 	Mesh* GetMesh();
+	Material* GetMaterial() { return materialboi; }
 	DirectX::XMFLOAT4X4 GetWorldMatrix();
 	void SetWorldMatrix(DirectX::XMFLOAT4X4 matrix);
 	DirectX::XMFLOAT3 GetPosition();

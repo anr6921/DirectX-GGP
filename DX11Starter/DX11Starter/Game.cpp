@@ -73,6 +73,12 @@ Game::~Game()
 
 	// delete materials
 	delete material1;
+	delete material2;
+
+	// Clean up DX resources
+	tileSRV->Release();
+	grassSRV->Release();
+	sampler->Release();
 }
 
 // --------------------------------------------------------
@@ -83,8 +89,30 @@ void Game::Init()
 {
 	LoadShaders();
 	CreateMatrices();
-	CreateBasicGeometry();
+	
+
 	camera = new Camera();
+
+	// Load textures
+	CreateWICTextureFromFile(device, context, L"../../Assets/tile.jpg", 0, &tileSRV);
+	CreateWICTextureFromFile(device, context, L"../../Assets/grass.jpg", 0, &grassSRV);
+
+	// Manually create a sampler state
+	D3D11_SAMPLER_DESC samplerDesc = {}; // Zero out the struct memory
+	// defines how to handle addressesy outside the 0-1 UV range
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	// how to handle sampling between pixels
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;//D3D11_FILTER_ANISOTROPIC;
+	//samplerDesc.MaxAnisotropy = 16;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	device->CreateSamplerState(&samplerDesc, &sampler);
+
+	// create materials
+	material1 = new Material(vertexShader, pixelShader, grassSRV, sampler);
+	material2 = new Material(vertexShader, pixelShader, tileSRV, sampler);
 
 	// Set Directional light values
 	light.AmbientColor = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
@@ -97,6 +125,7 @@ void Game::Init()
 	// Tell the input assembler stage of the pipeline what kind of
 	// geometric primitives (points, lines or triangles) we want to draw.  
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	CreateBasicGeometry();
 }
 
 // --------------------------------------------------------
@@ -113,7 +142,7 @@ void Game::LoadShaders()
 	pixelShader = new SimplePixelShader(device, context);
 	pixelShader->LoadShaderFile(L"PixelShader.cso");
 
-	material1 = new Material(vertexShader, pixelShader);
+	
 }
 
 
@@ -204,11 +233,13 @@ void Game::CreateBasicGeometry()
 	// - But just to see how it's done...
 	UINT indices[] = { 0, 1, 2 };
 
+	
+
 	mesh1 = new Mesh("../../Assets/cone.obj", device);
-	mesh2 = new Mesh("../../Assets/sphere.obj", device);
+	mesh2 = new Mesh("../../Assets/cube.obj", device);
 	mesh3 = new Mesh(vertices3, 3, indices, 3, device);
 
-	entity1 = new GameEntity(mesh2, material1);
+	entity1 = new GameEntity(mesh2, material2);
 	entity2 = new GameEntity(mesh2, material1);
 	entity3 = new GameEntity(mesh3, material1);
 	entity4 = new GameEntity(mesh3, material1);
@@ -259,7 +290,7 @@ void Game::Update(float deltaTime, float totalTime)
 	float sinTime = (sin(totalTime));
 	entity1->Transform(
 		XMMatrixScaling(1, 1, 1),
-		XMMatrixRotationX(0),
+		XMMatrixRotationY(-totalTime),
 		XMMatrixTranslation(0, 0, 0));
 
 	// Entity 2

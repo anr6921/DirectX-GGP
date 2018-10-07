@@ -92,17 +92,25 @@ void GameEntity::Transform(DirectX::XMMATRIX scl, DirectX::XMMATRIX rot, DirectX
 void GameEntity::PrepareMaterial(XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectionMatrix)
 {
 	SimpleVertexShader* vertexShader = materialboi->GetVertexShader();
-	SimplePixelShader* pixelShader = materialboi->GetPixelShader();
+  	SimplePixelShader* pixelShader = materialboi->GetPixelShader();
+	ID3D11ShaderResourceView* SRV = materialboi->GetSRV();
+	ID3D11SamplerState* sampler = materialboi->GetSamplerState();
 
 	//set basic shader data
 	vertexShader->SetMatrix4x4("world", worldMatrix);
 	vertexShader->SetMatrix4x4("view", viewMatrix);
 	vertexShader->SetMatrix4x4("projection", projectionMatrix);
 
-	// set shaders
-	vertexShader->SetShader();
+	// set vertex shader
 	vertexShader->CopyAllBufferData();
+	vertexShader->SetShader();
 
-	pixelShader->SetShader();
+	// set pixel shader data for textures
+	pixelShader->SetShaderResourceView("DiffuseTexture", SRV);
+	pixelShader->SetSamplerState("BasicSampler", sampler);
+
+	// set pixel shaders
 	pixelShader->CopyAllBufferData();
+	pixelShader->SetShader();
+	
 }

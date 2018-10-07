@@ -1,5 +1,9 @@
 
 
+// Define the texture related resources
+Texture2D DiffuseTexture : register(t0);
+//Texture2D SpecTexture : register(t1);
+SamplerState BasicSampler : register(s0);
 
 // Struct representing the data we expect to receive from earlier pipeline stages
 // - Should match the output of our corresponding vertex shader
@@ -62,6 +66,9 @@ float4 main(VertexToPixel input) : SV_TARGET
 //return float4(input.normal, 1); // temporary line
 //return light.DiffuseColor;
 
+	// texture calculations
+	float4 surfaceColor = DiffuseTexture.Sample(BasicSampler, input.uv);
+
 	// LIGHT CALCULATIONS
 
 	// Direction to the camera from the pixel
@@ -92,6 +99,6 @@ float4 main(VertexToPixel input) : SV_TARGET
 	//return float4(ambient, 0);
 	// --- FINAL COLOR ----------------------------
 	return float4(
-		light.AmbientColor +
-		light.DiffuseColor * NdotL);
+		(light.AmbientColor +
+		light.DiffuseColor * NdotL)*surfaceColor);
 }
